@@ -41,6 +41,7 @@ k.loadSprite("spritesheet", "./spritesheet.png", {
     },
     "player",
     ]);
+  });
 
     for (const layer of layers) {
         if (layer.name === "boundaries") {
