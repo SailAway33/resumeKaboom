@@ -1,0 +1,39 @@
+name: Build and run the site with kaboom.js and Vite
+
+on:
+push:
+  branches: [ "main" ]
+pull_request:
+  branches: [ "main" ]
+
+jobs:
+build:
+
+  runs-on: ubuntu-latest
+
+  steps:
+  - uses: actions/checkout@v4
+
+  - name: Build the site in the jekyll/builder container
+    run: |
+      docker run \
+      -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
+      jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
+
+  - name: Install Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: 18
+
+  - name: Install dependencies
+    run: |
+      npm ci
+
+  - name: Build the site with Vite
+    run: |
+      npm run build
+
+  - name: Run the site
+    run: |
+      npm run serve
+
